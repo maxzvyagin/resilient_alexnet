@@ -176,7 +176,10 @@ def multi_train(config):
         for attack_type in ['gaussian', 'deepfool']:
             pt_acc = model_attack(tf_model, "tf", attack_type, config, num_classes=NUM_CLASSES)
             search_results["tf" + "_" + attack_type + "_" + "accuracy"] = pt_acc
-    # save results
+    # check convergence
+    pt_conv, pt_ave_conv_diff = found_convergence(pt_val_acc)
+    tf_conv, tf_ave_conv_diff = found_convergence(tf_val_acc)
+    # calculated the metric required
     if not MAX_DIFF:
         # if training simply to maximize accuracy across the board
         all_results = list(search_results.values())
@@ -193,6 +196,8 @@ def multi_train(config):
         test_ave = float(statistics.mean(test_results))
         res_ave = float(statistics.mean(resiliency_results))
         average_res = test_ave-res_ave
+    elif MAXIMIZE_CONVERGENCE:
+        average_res = statistics.mean((pt_ave_conv_diff, tf_ave_conv_diff))
     else:
         # training to maximize difference between frameworks - unless minimize mode is used in original script args
         pt_results = []
@@ -205,12 +210,10 @@ def multi_train(config):
         pt_ave = float(statistics.mean(pt_results))
         tf_ave = float(statistics.mean(tf_results))
         average_res = abs(pt_ave-tf_ave)
-    ### calculate if converged
-    pt_conv, pt_ave_conv_diff = found_convergence(pt_val_acc)
-    tf_conv, tf_ave_conv_diff = found_convergence(tf_val_acc)
-    search_results['pt_converged'] = pt_conv
+    ### log everything
+    search_results['pt_converged_bool'] = pt_conv
     search_results['pt_converged_average'] = pt_ave_conv_diff
-    search_results['tf_converged'] = tf_conv
+    search_results['tf_converged_bool'] = tf_conv
     search_results['tf_converged_average'] = tf_ave_conv_diff
     search_results['average_res'] = average_res
     search_results['tf_training_loss'] = tf_training_history
@@ -293,7 +296,7 @@ def bitune_parse_arguments(args):
     else:
         TRIALS = int(args.trials)
 
-    if args.max_diff:
+    if args.maximize_difference:
         MAX_DIFF = True
         print("NOTE: Training using Max Diff approach")
 
@@ -304,11 +307,15 @@ def bitune_parse_arguments(args):
     if args.only_cpu:
         ONLY_CPU = True
 
-    if args.minimize_mode:
+    if args.minimize_difference:
+        MAX_DIFF = True
         OPTIMIZE_MODE = "min"
+        print("NOTE: Training using Min Diff Approach")
 
     if args.maximize_convergence:
+        print("NOTE: Training using Max Convergence Approach")
         MAXIMIZE_CONVERGENCE = True
+        OPTIMIZE_MODE = "min"
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Start bi model tuning with hyperspace and resiliency testing, "
@@ -317,17 +324,17 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--model")
     parser.add_argument("-t", "--trials")
     parser.add_argument("-j", "--json")
-    parser.add_argument('-d', "--max_diff", action="store_true")
+    parser.add_argument('-d', "--maximize_difference", action="store_true")
     parser.add_argument('-r', '--minimize_resiliency', action="store_true")
     parser.add_argument('-n', '--start_space')
     parser.add_argument('-c', '--only_cpu', action='store_true')
     parser.add_argument('-p', '--project_name', default="hyper_sensitive")
-    parser.add_argument('--minimize_mode', action="store_true")
+    parser.add_argument('--minimize_difference', action="store_true")
     parser.add_argument('--maximize_convergence', action='store_true')
     args = parser.parse_args()
     bitune_parse_arguments(args)
     # print(PT_MODEL)
-    print(OPTIMIZE_MODE)
+    # print(OPTIMIZE_MODE)
     spaceray.run_experiment(args, multi_train, ray_dir="/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/raylogs", cpu=8,
                                 start_space=int(args.start_space), mode=OPTIMIZE_MODE, project_name=args.project_name,
                                 group_name='bi_tune')
