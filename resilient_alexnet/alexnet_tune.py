@@ -34,6 +34,7 @@ FASHION = False
 MIN_RESILIENCY = False
 ONLY_CPU = False
 OPTIMIZE_MODE = "max"
+MAXIMIZE_CONVERGENCE = False
 
 def found_convergence(validation_accuracy):
     """Given validation accuracy, return bool defining if convergence has been reached: <=5% change in last 10 points"""
@@ -42,7 +43,7 @@ def found_convergence(validation_accuracy):
     for x in range(9):
         d = last_ten[x+1] - last_ten[x]
         diffs.append(d)
-    ave_diff = statistics.mean(diffs)
+    ave_diff = statistics.mean(abs(diffs))
     if ave_diff >= .05:
         return False, ave_diff
     else:
@@ -193,7 +194,7 @@ def multi_train(config):
         res_ave = float(statistics.mean(resiliency_results))
         average_res = test_ave-res_ave
     else:
-        # training to maximize difference between frameworks - unless minimize mode is used
+        # training to maximize difference between frameworks - unless minimize mode is used in original script args
         pt_results = []
         tf_results = []
         for key, value in search_results.items():
@@ -265,7 +266,7 @@ def multi_train(config):
 def bitune_parse_arguments(args):
     """Parsing arguments specifically for bi tune experiments"""
     global PT_MODEL, TF_MODEL, NUM_CLASSES, NO_FOOL, MNIST, TRIALS, MAX_DIFF, FASHION, MIN_RESILIENCY
-    global ONLY_CPU, OPTIMIZE_MODE, MODEL_TYPE
+    global ONLY_CPU, OPTIMIZE_MODE, MODEL_TYPE, MAXIMIZE_CONVERGENCE
     if not args.model:
         print("NOTE: Defaulting to fashion dataset model training...")
         args.model = "fashion"
@@ -306,6 +307,9 @@ def bitune_parse_arguments(args):
     if args.minimize_mode:
         OPTIMIZE_MODE = "min"
 
+    if args.maximize_convergence:
+        MAXIMIZE_CONVERGENCE = True
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Start bi model tuning with hyperspace and resiliency testing, "
                                      "specify output csv file name.")
@@ -319,6 +323,7 @@ if __name__ == "__main__":
     parser.add_argument('-c', '--only_cpu', action='store_true')
     parser.add_argument('-p', '--project_name', default="hyper_sensitive")
     parser.add_argument('--minimize_mode', action="store_true")
+    parser.add_argument('--maximize_convergence', action='store_true')
     args = parser.parse_args()
     bitune_parse_arguments(args)
     # print(PT_MODEL)
