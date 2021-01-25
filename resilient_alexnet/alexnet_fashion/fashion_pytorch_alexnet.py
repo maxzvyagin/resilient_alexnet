@@ -156,7 +156,7 @@ class Fashion_PyTorch_AlexNet(pl.LightningModule):
         return {'avg_test_loss': avg_loss, 'log': tensorboard_logs, 'avg_test_accuracy': avg_accuracy}
 
 
-def fashion_pt_objective(config, ten=False):
+def fashion_pt_objective(config):
     #os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
     torch.manual_seed(0)
     model = Fashion_PyTorch_AlexNet(config)
