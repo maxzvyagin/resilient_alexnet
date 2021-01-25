@@ -315,7 +315,6 @@ if __name__ == "__main__":
     parser.add_argument("-j", "--json")
     parser.add_argument('-d', "--max_diff", action="store_true")
     parser.add_argument('-r', '--minimize_resiliency', action="store_true")
-    parser.add_argument('-l', '--on_lambda', action="store_true")
     parser.add_argument('-n', '--start_space')
     parser.add_argument('-c', '--only_cpu', action='store_true')
     parser.add_argument('-p', '--project_name', default="hyper_sensitive")
@@ -324,10 +323,6 @@ if __name__ == "__main__":
     bitune_parse_arguments(args)
     # print(PT_MODEL)
     print(OPTIMIZE_MODE)
-    if args.on_lambda:
-        spaceray.run_experiment(args, multi_train, ray_dir="~/raylogs", cpu=8, start_space=int(args.start_space),
-                                mode=OPTIMIZE_MODE)
-    else:
-        spaceray.run_experiment(args, multi_train, ray_dir="/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/raylogs", cpu=8,
+    spaceray.run_experiment(args, multi_train, ray_dir="/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/raylogs", cpu=8,
                                 start_space=int(args.start_space), mode=OPTIMIZE_MODE, project_name=args.project_name,
                                 group_name='bi_tune')
