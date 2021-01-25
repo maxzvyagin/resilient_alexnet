@@ -73,8 +73,11 @@ def model_attack(model, model_type, attack_type, config, num_classes=NUM_CLASSES
             data = DataLoader(Caltech_NP_Dataset(x_test.astype(np.float32), y_test.astype(np.float32)),
                               batch_size=int(config['batch_size']), shuffle=False)
         else:
-            print("NOT IMPLEMENTED")
-            sys.exit()
+            f = open('/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/alexnet_datasets/cinic_splits.pkl', 'rb')
+            data = pickle.load(f)
+            (x_train, y_train), (x_val, y_val), (x_test, y_test) = data
+            data = DataLoader(Fashion_NP_Dataset(x_test.astype(np.float32), y_test.astype(np.float32)),
+                              batch_size=int(config['batch_size']), shuffle=False)
         images, labels = [], []
         for sample in data:
             images.append(sample[0].to(device))
@@ -93,8 +96,11 @@ def model_attack(model, model_type, attack_type, config, num_classes=NUM_CLASSES
             (x_train, y_train), (x_val, y_val), (x_test, y_test) = data
             data = tf.data.Dataset.from_tensor_slices((x_test.astype(np.float32), y_test.astype(np.float32))).batch(config['batch_size'])
         else:
-            print("NOT IMPLEMENTED")
-            sys.exit()
+            f = open('/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/alexnet_datasets/cinic_splits.pkl', 'rb')
+            data = pickle.load(f)
+            (x_train, y_train), (x_val, y_val), (x_test, y_test) = data
+            data = tf.data.Dataset.from_tensor_slices((x_test.astype(np.float32), y_test.astype(np.float32))).batch(
+                config['batch_size'])
         images, labels = [], []
         for sample in data:
             images.append(sample[0])
