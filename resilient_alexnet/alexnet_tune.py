@@ -1,6 +1,7 @@
 import sys
 from resilient_alexnet.alexnet_fashion import fashion_pytorch_alexnet, fashion_tensorflow_alexnet
 from resilient_alexnet.alexnet_caltech import caltech_pytorch_alexnet, caltech_tensorflow_alexnet
+from resilient_alexnet.alexnet_cinic import cinic_pytorch_alexnet, cinic_tensorflow_alexnet
 from resilient_alexnet.alexnet_caltech.caltech_pytorch_alexnet import Caltech_NP_Dataset
 from resilient_alexnet.alexnet_fashion.fashion_pytorch_alexnet import Fashion_NP_Dataset
 import argparse
@@ -222,23 +223,10 @@ def multi_train(config):
     search_results['pt_training_loss'] = pt_training_history
     search_results['pt_validation_loss'] = pt_val_loss
     search_results['pt_validation_acc'] = pt_val_acc
-    # for x in pt_training_history:
-    #     wandb.log({'PT_Training_Loss': x})
-    # for x in pt_val_loss:
-    #     wandb.log({'PT_Validation_Loss': x})
-    # for x in pt_val_acc:
-    #     wandb.log({'PT_Validation_Acc': x})
-    # for x in tf_training_history:
-    #     wandb.log({'TF_Training_Loss': x})
-    # for x in tf_val_loss:
-    #     wandb.log({'TF_Validation_Loss': x})
-    # for x in tf_val_acc:
-    #     wandb.log({'TF_Validation_Acc': x})
-    # ###
-    # history_dict = {'PT_Training_Loss': pt_training_history, 'PT_Validation_Loss': pt_val_loss,
-    #                 'PT_Val_Acc': pt_val_acc, 'TF_Training_Loss': tf_training_history,
-    #                 'TF_Validation_Loss': tf_val_loss, 'TF_Val_Acc': tf_val_acc}
-    # wandb.log(history_dict)
+    # log inidividual metrics to wanbd
+    for key, value in search_results.items():
+        wandb.log({key: value})
+    # log custom training and validation curve charts to wandb
     data = [[x, y] for (x, y) in zip(list(range(len(pt_training_history))), pt_training_history)]
     table = wandb.Table(data=data, columns=["epochs", "training_loss"])
     wandb.log({"PT Training Loss": wandb.plot.line(table, "epochs", "training_loss", title="PT Training Loss")})
@@ -249,7 +237,6 @@ def multi_train(config):
     table = wandb.Table(data=data, columns=["epochs", "validation accuracy"])
     wandb.log({"PT Validation Accuracy": wandb.plot.line(table, "epochs", "validation accuracy",
                                                          title="PT Validation Accuracy")})
-    # wandb.log({'tf_training_history': tf_training_history, 'separate_log_test': True})
     data = [[x, y] for (x, y) in zip(list(range(len(tf_training_history))), tf_training_history)]
     table = wandb.Table(data=data, columns=["epochs", "training_loss"])
     wandb.log({"TF Training Loss": wandb.plot.line(table, "epochs", "training_loss", title="TF Training Loss")})
@@ -281,8 +268,6 @@ def bitune_parse_arguments(args):
             NUM_CLASSES = 102
             MODEL_TYPE = "caltech"
         elif args.model == "cinic":
-            print("NOT YET IMPLEMENTED")
-            sys.exit()
             PT_MODEL = fashion_pytorch_alexnet.fashion_pt_objective
             TF_MODEL = fashion_tensorflow_alexnet.fashion_tf_objective
             NUM_CLASSES = 10
