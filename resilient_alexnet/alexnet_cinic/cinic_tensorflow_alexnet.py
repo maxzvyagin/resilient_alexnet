@@ -16,3 +16,7 @@ def cinic_tf_objective(config):
     model.fit()
     accuracy = model.test()
     return accuracy, model.model, model.training_loss_history, model.val_loss_history, model.val_acc_history
+
+if __name__ == "__main__":
+    test_config = {'batch_size': 500, 'learning_rate': .000001, 'epochs': 5, 'dropout': 0.9, 'adam_epsilon': 10**-9}
+    res = cinic_tf_objective(test_config)
