@@ -43,8 +43,8 @@ def found_convergence(validation_accuracy):
     diffs = []
     for x in range(9):
         d = last_ten[x+1] - last_ten[x]
-        diffs.append(d)
-    ave_diff = statistics.mean(abs(diffs))
+        diffs.append(abs(d))
+    ave_diff = statistics.mean(diffs)
     if ave_diff >= .05:
         return False, ave_diff
     else:
