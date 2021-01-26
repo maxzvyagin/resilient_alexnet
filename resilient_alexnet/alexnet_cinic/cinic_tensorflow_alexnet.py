@@ -9,13 +9,15 @@ class CINIC_TensorFlow_AlexNet:
         tf.random.set_seed(0)
         b = int(config['batch_size'])
         # (self.x_train, self.y_train), (self.x_test, self.y_test) = keras.datasets.fashion_mnist.load_data()
-        f = open('/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/alexnet_datasets/fashion_splits.pkl', 'rb')
+        f = open('/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/alexnet_datasets/cinic_splits.pkl', 'rb')
         data = pickle.load(f)
         (self.x_train, self.y_train), (self.x_val, self.y_val), (self.x_test, self.y_test) = data
         f.close()
-        self.train_data = tf.data.Dataset.from_tensor_slices((self.x_train, self.y_train)).batch(int(config['batch_size']))
+        self.train_data = tf.data.Dataset.from_tensor_slices((self.x_train, self.y_train)).batch(
+            int(config['batch_size']))
         self.val_data = tf.data.Dataset.from_tensor_slices((self.x_val, self.y_val)).batch(int(config['batch_size']))
-        self.test_data = tf.data.Dataset.from_tensor_slices((self.x_test, self.y_test)).batch(int(config['batch_size']))
+        self.test_data = tf.data.Dataset.from_tensor_slices((self.x_test, self.y_test)).batch(
+            int(config['batch_size']))
         # transform = lambda i: i.astype(float)
         # self.x_train = list(map(transform, self.x_train))
         # self.x_val = list(map(transform, self.x_val))
@@ -64,13 +66,6 @@ class CINIC_TensorFlow_AlexNet:
 def cinic_tf_objective(config):
     model = CINIC_TensorFlow_AlexNet(config)
     ### edit the data here
-    f = open('/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/alexnet_datasets/cinic_splits.pkl', 'rb')
-    data = pickle.load(f)
-    (model.x_train, model.y_train), (model.x_val, model.y_val), (model.x_test, model.y_test) = data
-    f.close()
-    model.train_data = tf.data.Dataset.from_tensor_slices((model.x_train, model.y_train)).batch(int(config['batch_size']))
-    model.val_data = tf.data.Dataset.from_tensor_slices((model.x_val, model.y_val)).batch(int(config['batch_size']))
-    model.test_data = tf.data.Dataset.from_tensor_slices((model.x_test, model.y_test)).batch(int(config['batch_size']))
     ### perform fitting and testing
     model.fit()
     accuracy = model.test()
