@@ -1,0 +1,2 @@
+Unable to complete trials in space 27... Exception below.('Trials did not complete', [multi_train_192e5682, multi_train_50f5dd24])
+
