@@ -3,10 +3,34 @@ import pytorch_lightning as pl
 import torch
 import pickle
 import argparse
+from torch import nn
 
 def cinic_pt_objective(config):
     torch.manual_seed(0)
     model = Fashion_PyTorch_AlexNet(config)
+    classes = 10
+    model.model = nn.Sequential(
+        nn.Conv2d(3, 64, kernel_size=11, stride=4, padding=5),
+        nn.ReLU(inplace=True),
+        nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+        nn.Conv2d(64, 256, kernel_size=5, padding=2),
+        nn.ReLU(inplace=True),
+        nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+        nn.Conv2d(256, 384, kernel_size=3, padding=1),
+        nn.ReLU(inplace=True),
+        nn.Conv2d(384, 384, kernel_size=3, padding=1),
+        nn.ReLU(inplace=True),
+        nn.Conv2d(384, 256, kernel_size=3, padding=1),
+        nn.ReLU(inplace=True),
+        nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+        nn.Flatten(),
+        nn.Linear(256, 4096),
+        nn.ReLU(inplace=True),
+        nn.Dropout(config['dropout']),
+        nn.Linear(4096, 4096),
+        nn.ReLU(inplace=True),
+        nn.Dropout(config['dropout']),
+        nn.Linear(4096, classes))
     ### edit the data
     ### load in pickled dataset
     f = open('/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/alexnet_datasets/cinic_splits.pkl', 'rb')
