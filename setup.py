@@ -12,7 +12,7 @@ setuptools.setup(
     license="MIT",
     long_description_content_type="text/markdown",
     description='Experiments for alexnet resiliency and sensitivity',
-    version='v0.0.3',
+    version='v0.0.4',
     long_description=README,
     url='https://github.com/maxzvyagin/resilient_alexnet',
     packages=setuptools.find_packages(),
