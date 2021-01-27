@@ -29,20 +29,24 @@ class Fashion_TensorFlow_AlexNet:
         classes = 10
         self.model = keras.models.Sequential([
             keras.layers.Conv2D(filters=64, kernel_size=(11,11), strides=4, activation='relu', input_shape=(1, 28, 28),
-                                padding="same"),
+                                padding="same", kernel_initializer='he_uniform'),
             keras.layers.MaxPool2D(pool_size=(3,3), strides=(2, 2), padding="same"),
-            keras.layers.Conv2D(filters=256, kernel_size=(5,5), strides=1, activation='relu', padding="same"),
+            keras.layers.Conv2D(filters=256, kernel_size=(5,5), strides=1, activation='relu', padding="same",
+                                kernel_initializer='he_uniform'),
             keras.layers.MaxPool2D(pool_size=(3,3), strides=(2, 2), padding="same"),
-            keras.layers.Conv2D(filters=384, kernel_size=(3,3), strides=1, activation='relu', padding="same"),
-            keras.layers.Conv2D(filters=384, kernel_size=(3,3), strides=1, activation='relu', padding="same"),
-            keras.layers.Conv2D(filters=256, kernel_size=(3,3), strides=1, activation='relu', padding="same"),
+            keras.layers.Conv2D(filters=384, kernel_size=(3,3), strides=1, activation='relu', padding="same",
+                                kernel_initializer='he_uniform'),
+            keras.layers.Conv2D(filters=384, kernel_size=(3,3), strides=1, activation='relu', padding="same",
+                                kernel_initializer='he_uniform'),
+            keras.layers.Conv2D(filters=256, kernel_size=(3,3), strides=1, activation='relu', padding="same",
+                                kernel_initializer='he_uniform'),
             keras.layers.MaxPool2D(pool_size=(3,3), strides=(2, 2), padding="same"),
             keras.layers.Flatten(),
-            keras.layers.Dense(4096, activation='relu'),
+            keras.layers.Dense(4096, activation='relu', kernel_initializer='he_uniform'),
             keras.layers.Dropout(config['dropout']),
-            keras.layers.Dense(4096, activation='relu'),
+            keras.layers.Dense(4096, activation='relu', kernel_initializer='he_uniform'),
             keras.layers.Dropout(config['dropout']),
-            keras.layers.Dense(classes, activation=None)
+            keras.layers.Dense(classes, activation=None, kernel_initializer='he_uniform')
         ])
 
         #opt = tf.keras.optimizers.Adam(learning_rate=config['learning_rate'], epsilon=config['adam_epsilon'])
