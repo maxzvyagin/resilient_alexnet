@@ -2,6 +2,7 @@ import sys
 from resilient_alexnet.alexnet_fashion import fashion_pytorch_alexnet, fashion_tensorflow_alexnet
 from resilient_alexnet.alexnet_caltech import caltech_pytorch_alexnet, caltech_tensorflow_alexnet
 from resilient_alexnet.alexnet_cinic import cinic_pytorch_alexnet, cinic_tensorflow_alexnet
+from resilient_alexnet.rms_alexnet_fashion import rms_fashion_pytorch_alexnet, rms_fashion_tensorflow_alexnet
 from resilient_alexnet.alexnet_caltech.caltech_pytorch_alexnet import Caltech_NP_Dataset
 from resilient_alexnet.alexnet_fashion.fashion_pytorch_alexnet import Fashion_NP_Dataset
 import argparse
@@ -278,6 +279,11 @@ def bitune_parse_arguments(args):
             TF_MODEL = cinic_tensorflow_alexnet.cinic_tf_objective
             NUM_CLASSES = 10
             MODEL_TYPE = "cinic"
+        elif args.model == "rms_fashion":
+            PT_MODEL = rms_fashion_pytorch_alexnet.rms_fashion_pt_objective
+            TF_MODEL = rms_fashion_tensorflow_alexnet.rms_fashion_tf_objective
+            NUM_CLASSES = 10
+            MODEL_TYPE = "fashion"
         else:
             print("\n ERROR: Unknown model type. Please try again. "
                   "Must be one of: mnist, alexnet_cifar100, segmentation_cityscapes, or segmentation_gis.\n")

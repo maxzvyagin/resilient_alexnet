@@ -159,7 +159,7 @@ class Fashion_PyTorch_AlexNet(pl.LightningModule):
         return {'avg_test_loss': avg_loss, 'log': tensorboard_logs, 'avg_test_accuracy': avg_accuracy}
 
 
-def fashion_pt_objective(config):
+def rms_fashion_pt_objective(config):
     #os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
     torch.manual_seed(0)
     model = Fashion_PyTorch_AlexNet(config)
@@ -181,4 +181,4 @@ if __name__ == "__main__":
     else:
         batch = 64
     test_config = {'batch_size': batch, 'learning_rate': .0001, 'epochs': 5, 'dropout': 0.5, 'adam_epsilon': 10**-9}
-    res = fashion_pt_objective(test_config)
+    res = rms_fashion_pt_objective(test_config)

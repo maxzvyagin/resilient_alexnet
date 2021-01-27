@@ -65,7 +65,7 @@ class Fashion_TensorFlow_AlexNet:
         res_test = self.model.evaluate(self.test_data)
         return res_test[1]
 
-def fashion_tf_objective(config):
+def rms_fashion_tf_objective(config):
     model = Fashion_TensorFlow_AlexNet(config)
     model.fit()
     accuracy = model.test()
@@ -75,4 +75,4 @@ def fashion_tf_objective(config):
 
 if __name__ == "__main__":
     test_config = {'batch_size': 500, 'learning_rate': .000001, 'epochs': 5, 'dropout': 0.9, 'adam_epsilon': 10**-9}
-    res = fashion_tf_objective(test_config)
+    res = rms_fashion_tf_objective(test_config)
