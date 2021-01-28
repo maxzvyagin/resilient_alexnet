@@ -82,7 +82,7 @@ def model_attack(model, model_type, attack_type, config, num_classes=NUM_CLASSES
         images, labels = [], []
         for sample in data:
             images.append(sample[0].to(device))
-            labels.append(sample[1].to(device))
+            labels.append(sample[1].long().to(device))
         # images, labels = (torch.from_numpy(images).to(device), torch.from_numpy(labels).to(device))
     elif model_type == "tf":
         fmodel = fb.models.TensorFlowModel(model, bounds=(0, 1))
