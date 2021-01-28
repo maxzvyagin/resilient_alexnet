@@ -197,23 +197,14 @@ def multi_train(config):
     if not NO_FOOL:
         # for attack_type in ['gaussian', 'deepfool']:
         for attack_type in ['pgd']:
-            pt_acc = model_attack(tf_model, "tf", attack_type, config, num_classes=NUM_CLASSES)
-            search_results["tf" + "_" + attack_type + "_" + "accuracy"] = pt_acc
+            tf_acc = model_attack(tf_model, "tf", attack_type, config, num_classes=NUM_CLASSES)
+            search_results["tf" + "_" + attack_type + "_" + "accuracy"] = tf_acc
             tf_pgd = pt_acc
     # check convergence
     pt_conv, pt_ave_conv_diff = found_convergence(pt_val_acc)
     tf_conv, tf_ave_conv_diff = found_convergence(tf_val_acc)
     # calculated the metric required
-    if not MAX_DIFF:
-        # if training simply to maximize accuracy across the board
-        all_results = list(search_results.values())
-        average_res = float(statistics.mean(all_results))
-    elif DIFF_RESILIENCY:
-        # (TF_PGD-PT_PGD) - (TF_TEST - PT_TEST) -> maximization
-        average_res = (abs(tf_pgd - pt_pgd))-(abs(tf_test_acc - pt_test_acc))
-    elif MAXIMIZE_CONVERGENCE:
-        average_res = statistics.mean((pt_ave_conv_diff, tf_ave_conv_diff))
-    else:
+    if MAX_DIFF:
         # training to maximize difference between frameworks - unless minimize mode is used in original script args
         pt_results = []
         tf_results = []
@@ -224,7 +215,16 @@ def multi_train(config):
                 tf_results.append(value)
         pt_ave = float(statistics.mean(pt_results))
         tf_ave = float(statistics.mean(tf_results))
-        average_res = abs(pt_ave-tf_ave)
+        average_res = abs(pt_ave - tf_ave)
+    elif DIFF_RESILIENCY:
+        # (TF_PGD-PT_PGD) - (TF_TEST - PT_TEST) -> maximization
+        average_res = (abs(tf_pgd - pt_pgd))-(abs(tf_test_acc - pt_test_acc))
+    elif MAXIMIZE_CONVERGENCE:
+        average_res = statistics.mean((pt_ave_conv_diff, tf_ave_conv_diff))
+    else:
+        # if training simply to maximize accuracy across the board
+        all_results = list(search_results.values())
+        average_res = float(statistics.mean(all_results))
     ### log everything
     search_results['pt_converged_bool'] = pt_conv
     search_results['pt_converged_average'] = pt_ave_conv_diff
