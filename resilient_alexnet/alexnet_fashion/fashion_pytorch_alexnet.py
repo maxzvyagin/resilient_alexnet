@@ -170,12 +170,12 @@ def fashion_pt_objective(config):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-b", "--batch")
-    args = parser.parse_args()
-    if args.batch:
-        batch = args.batch
-    else:
-        batch = 64
-    test_config = {'batch_size': batch, 'learning_rate': .0001, 'epochs': 5, 'dropout': 0.5, 'adam_epsilon': 10**-9}
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("-b", "--batch")
+    # args = parser.parse_args()
+    # if args.batch:
+    #     batch = args.batch
+    # else:
+    #     batch = 64
+    test_config = {'batch_size': 64, 'learning_rate': .0001, 'epochs': 5, 'dropout': 0.5, 'adam_epsilon': 10**-9}
     res = fashion_pt_objective(test_config)

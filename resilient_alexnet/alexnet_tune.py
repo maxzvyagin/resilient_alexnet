@@ -105,7 +105,7 @@ def model_attack(model, model_type, attack_type, config, num_classes=NUM_CLASSES
         images, labels = [], []
         for sample in data:
             images.append(sample[0])
-            labels.append(sample[1])
+            labels.append(sample[1].astype(np.int64))
     else:
         print("Incorrect model type in model attack. Please try again. Must be either PyTorch or TensorFlow.")
         sys.exit()
