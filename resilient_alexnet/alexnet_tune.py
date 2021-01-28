@@ -33,7 +33,7 @@ NO_FOOL = False
 MNIST = True
 MAX_DIFF = False
 FASHION = False
-MIN_RESILIENCY = False
+DIFF_RESILIENCY = False
 ONLY_CPU = False
 OPTIMIZE_MODE = "max"
 MAXIMIZE_CONVERGENCE = False
@@ -124,6 +124,8 @@ def model_attack(model, model_type, attack_type, config, num_classes=NUM_CLASSES
         attack = fb.attacks.SpatialAttack()
     elif attack_type == "deepfool":
         attack = fb.attacks.LinfDeepFoolAttack()
+    elif attack_type == "pgd":
+        attack = fb.attacks.LinfPGD()
     epsilons = [
         0.0,
         0.0002,
@@ -153,7 +155,7 @@ def model_attack(model, model_type, attack_type, config, num_classes=NUM_CLASSES
 @wandb_mixin
 def multi_train(config):
     """Definition of side by side training of pytorch and tensorflow models, plus optional resiliency testing."""
-    global NUM_CLASSES, MIN_RESILIENCY, MAX_DIFF, ONLY_CPU, MAXIMIZE_CONVERGENCE
+    global NUM_CLASSES, DIFF_RESILIENCY, MAX_DIFF, ONLY_CPU, MAXIMIZE_CONVERGENCE
     # print(NUM_CLASSES)
     if ONLY_CPU:
         try:
@@ -166,9 +168,11 @@ def multi_train(config):
     pt_model.eval()
     search_results = {'pt_test_acc': pt_test_acc}
     if not NO_FOOL:
-        for attack_type in ['gaussian', 'deepfool']:
+        # for attack_type in ['gaussian', 'deepfool']:
+        for attack_type in ['pgd']:
             pt_acc = model_attack(pt_model, "pt", attack_type, config, num_classes=NUM_CLASSES)
             search_results["pt" + "_" + attack_type + "_" + "accuracy"] = pt_acc
+            pt_pgd = pt_acc
     # to avoid weird CUDA OOM errors
     del pt_model
     torch.cuda.empty_cache()
@@ -181,9 +185,11 @@ def multi_train(config):
         tf_test_acc, tf_model, tf_training_history, tf_val_loss, tf_val_acc = TF_MODEL(config)
     search_results['tf_test_acc'] = tf_test_acc
     if not NO_FOOL:
-        for attack_type in ['gaussian', 'deepfool']:
+        # for attack_type in ['gaussian', 'deepfool']:
+        for attack_type in ['pgd']:
             pt_acc = model_attack(tf_model, "tf", attack_type, config, num_classes=NUM_CLASSES)
             search_results["tf" + "_" + attack_type + "_" + "accuracy"] = pt_acc
+            tf_pgd = pt_acc
     # check convergence
     pt_conv, pt_ave_conv_diff = found_convergence(pt_val_acc)
     tf_conv, tf_ave_conv_diff = found_convergence(tf_val_acc)
@@ -192,18 +198,9 @@ def multi_train(config):
         # if training simply to maximize accuracy across the board
         all_results = list(search_results.values())
         average_res = float(statistics.mean(all_results))
-    elif MIN_RESILIENCY:
-        # training to maximize difference between test accuracy and test resiliency
-        test_results = []
-        resiliency_results = []
-        for key, value in search_results.items():
-            if "test" in key:
-                test_results.append(value)
-            else:
-                resiliency_results.append(value)
-        test_ave = float(statistics.mean(test_results))
-        res_ave = float(statistics.mean(resiliency_results))
-        average_res = test_ave-res_ave
+    elif DIFF_RESILIENCY:
+        # (TF_PGD-PT_PGD) - (TF_TEST - PT_TEST) -> maximization
+        average_res = (abs(tf_pgd - pt_pgd))-(abs(tf_test_acc - pt_test_acc))
     elif MAXIMIZE_CONVERGENCE:
         average_res = statistics.mean((pt_ave_conv_diff, tf_ave_conv_diff))
     else:
@@ -262,7 +259,7 @@ def multi_train(config):
 
 def bitune_parse_arguments(args):
     """Parsing arguments specifically for bi tune experiments"""
-    global PT_MODEL, TF_MODEL, NUM_CLASSES, NO_FOOL, MNIST, TRIALS, MAX_DIFF, FASHION, MIN_RESILIENCY
+    global PT_MODEL, TF_MODEL, NUM_CLASSES, NO_FOOL, MNIST, TRIALS, MAX_DIFF, FASHION, DIFF_RESILIENCY
     global ONLY_CPU, OPTIMIZE_MODE, MODEL_TYPE, MAXIMIZE_CONVERGENCE
     if not args.model:
         print("NOTE: Defaulting to fashion dataset model training...")
@@ -297,8 +294,8 @@ def bitune_parse_arguments(args):
         MAX_DIFF = True
         print("NOTE: Training using Max Diff approach")
 
-    if args.minimize_resiliency:
-        MIN_RESILIENCY = True
+    if args.different_resiliency:
+        DIFF_RESILIENCY = True
         print("NOTE: Training using Min Resiliency approach")
 
     if args.only_cpu:
@@ -322,7 +319,7 @@ if __name__ == "__main__":
     parser.add_argument("-t", "--trials")
     parser.add_argument("-j", "--json")
     parser.add_argument('-d', "--maximize_difference", action="store_true")
-    parser.add_argument('-r', '--minimize_resiliency', action="store_true")
+    parser.add_argument('-r', '--different_resiliency', action="store_true")
     parser.add_argument('-n', '--start_space')
     parser.add_argument('-c', '--only_cpu', action='store_true')
     parser.add_argument('-p', '--project_name', default="hyper_sensitive")
