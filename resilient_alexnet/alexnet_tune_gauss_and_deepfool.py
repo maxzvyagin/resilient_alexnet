@@ -37,6 +37,7 @@ DIFF_RESILIENCY = False
 ONLY_CPU = False
 OPTIMIZE_MODE = "max"
 MAXIMIZE_CONVERGENCE = False
+MINIMIZE_VARIANCE = False
 
 def found_convergence(validation_accuracy):
     """Given validation accuracy, return bool defining if convergence has been reached: <=5% change in last 10 points"""
@@ -223,6 +224,17 @@ def multi_train(config):
         average_res = (abs(statistics.mean(tf_attack_accs) - statistics.mean(pt_attack_accs)))-(abs(tf_test_acc - pt_test_acc))
     elif MAXIMIZE_CONVERGENCE:
         average_res = statistics.mean((pt_ave_conv_diff, tf_ave_conv_diff))
+    elif MINIMIZE_VARIANCE:
+        pt_results = []
+        tf_results = []
+        for key, value in search_results.items():
+            if "pt" in key:
+                pt_results.append(value)
+            else:
+                tf_results.append(value)
+        pt_var = statistics.variance(pt_results)
+        tf_var = statistics.variance(tf_results)
+        average_res = abs(pt_var - tf_var)
     else:
         # if training simply to maximize accuracy across the board
         all_results = list(search_results.values())
@@ -272,7 +284,7 @@ def multi_train(config):
 def bitune_parse_arguments(args):
     """Parsing arguments specifically for bi tune experiments"""
     global PT_MODEL, TF_MODEL, NUM_CLASSES, NO_FOOL, MNIST, TRIALS, MAX_DIFF, FASHION, DIFF_RESILIENCY
-    global ONLY_CPU, OPTIMIZE_MODE, MODEL_TYPE, MAXIMIZE_CONVERGENCE
+    global ONLY_CPU, OPTIMIZE_MODE, MODEL_TYPE, MAXIMIZE_CONVERGENCE, MINIMIZE_VARIANCE
     if not args.model:
         print("NOTE: Defaulting to fashion dataset model training...")
         args.model = "fashion"
@@ -323,6 +335,11 @@ def bitune_parse_arguments(args):
         MAXIMIZE_CONVERGENCE = True
         OPTIMIZE_MODE = "min"
 
+    if args.minimize_variance:
+        print("NOTE: Training using Min Variance Approach")
+        MINIMIZE_VARIANCE = True
+        OPTIMIZE_MODE = "min"
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Start bi model tuning with hyperspace and resiliency testing, "
                                      "specify output csv file name.")
@@ -337,6 +354,7 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--project_name', default="hyper_sensitive")
     parser.add_argument('--minimize_difference', action="store_true")
     parser.add_argument('--maximize_convergence', action='store_true')
+    parser.add_argument('--minimize_variance', action="store_true")
     args = parser.parse_args()
     bitune_parse_arguments(args)
     # print(PT_MODEL)
