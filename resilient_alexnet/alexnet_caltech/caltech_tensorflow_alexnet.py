@@ -74,7 +74,7 @@ class Caltech_TensorFlow_AlexNet:
         # res_test = self.model.evaluate(self.test)
         return res_test[1]
 
-def fashion_tf_objective(config):
+def caltech_tf_objective(config):
     model = Caltech_TensorFlow_AlexNet(config)
     model.fit()
     accuracy = model.test()
