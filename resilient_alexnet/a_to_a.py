@@ -167,10 +167,10 @@ def model_attack(model, model_type, attack_type, config, num_classes=NUM_CLASSES
 @wandb_mixin
 def double_train(config):
     """Definition of side by side training of pytorch and tensorflow models, plus optional resiliency testing."""
-    global NUM_CLASSES, DIFF_RESILIENCY, MAX_DIFF, ONLY_CPU, MAXIMIZE_CONVERGENCE, MODEL_SELECT
+    global NUM_CLASSES, DIFF_RESILIENCY, MAX_DIFF, ONLY_CPU, MAXIMIZE_CONVERGENCE, MODEL_FRAMEWORK
     # print(NUM_CLASSES)
     pt = False
-    if MODEL_SELECT == "pt":
+    if MODEL_FRAMEWORK == "pt":
         selected_model = PT_MODEL
         pt = True
     else:
@@ -183,14 +183,15 @@ def double_train(config):
             pt_test_acc, pt_model, pt_training_history, pt_val_loss, pt_val_acc = selected_model(config)
     else:
         pt_test_acc, pt_model, pt_training_history, pt_val_loss, pt_val_acc = selected_model(config)
-    pt_model.eval()
+    if pt:
+        pt_model.eval()
     search_results = {'first_test_acc': pt_test_acc}
-    search_results['framework'] = MODEL_SELECT
+    search_results['framework'] = MODEL_FRAMEWORK
     if not NO_FOOL:
         pt_attack_accs = []
         for attack_type in ['gaussian', 'deepfool']:
         # for attack_type in ['pgd']:
-            pt_acc = model_attack(pt_model, "pt", attack_type, config, num_classes=NUM_CLASSES)
+            pt_acc = model_attack(pt_model, MODEL_FRAMEWORK, attack_type, config, num_classes=NUM_CLASSES)
             search_results["first" + "_" + attack_type + "_" + "accuracy"] = pt_acc
             pt_attack_accs.append(pt_acc)
     # to avoid weird CUDA OOM errors
@@ -204,11 +205,13 @@ def double_train(config):
     else:
         tf_test_acc, tf_model, tf_training_history, tf_val_loss, tf_val_acc = selected_model(config)
     search_results['second_test_acc'] = tf_test_acc
+    if pt:
+        tf_model.eval()
     if not NO_FOOL:
         tf_attack_accs = []
         for attack_type in ['gaussian', 'deepfool']:
         # for attack_type in ['pgd']:
-            tf_acc = model_attack(tf_model, "tf", attack_type, config, num_classes=NUM_CLASSES)
+            tf_acc = model_attack(tf_model, MODEL_FRAMEWORK, attack_type, config, num_classes=NUM_CLASSES)
             search_results["second" + "_" + attack_type + "_" + "accuracy"] = tf_acc
             tf_attack_accs.append(tf_acc)
     # check convergence
@@ -272,7 +275,7 @@ def double_train(config):
 def bitune_parse_arguments(args):
     """Parsing arguments specifically for bi tune experiments"""
     global PT_MODEL, TF_MODEL, NUM_CLASSES, NO_FOOL, MNIST, TRIALS, MAX_DIFF, FASHION, DIFF_RESILIENCY
-    global ONLY_CPU, OPTIMIZE_MODE, MODEL_TYPE, MAXIMIZE_CONVERGENCE, MINIMIZE_VARIANCE
+    global ONLY_CPU, OPTIMIZE_MODE, MODEL_TYPE, MAXIMIZE_CONVERGENCE, MINIMIZE_VARIANCE, MODEL_FRAMEWORK
     if not args.model:
         print("NOTE: Defaulting to fashion dataset model training...")
         args.model = "fashion"
