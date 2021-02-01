@@ -1,0 +1,24 @@
+Jobid: 10007789
+qsub -n 1 -A CVD-Mol-AI -t 12:00:00 -I --attrs pubnet=true
+Sun Jan 31 20:57:07 2021 +0000 (UTC) submitted with cwd set to: /lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/resilient_alexnet/resilient_alexnet/results
+jobid 10007789 submitted from terminal /dev/pts/10
+Sun Jan 31 20:56:53 2021 +0000 (UTC) 
+Sun Jan 31 20:56:53 2021 +0000 (UTC) Command: '/usr/bin/ssh' 'thetagpu20' '/usr/bin/cobalt-launcher.py' '--nf' '/var/tmp/cobalt.10007789' '--jobid' '10007789' '--cwd' '/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/resilient_alexnet/resilient_alexnet/results' '--env' 'COBALT_JOBID=10007789' '/bin/sleep' '43200'
+Sun Jan 31 20:56:53 2021 +0000 (UTC) 
+Sun Jan 31 20:56:53 2021 +0000 (UTC) Environment:
+Sun Jan 31 20:56:53 2021 +0000 (UTC) SHELL=/bin/bash
+Sun Jan 31 20:56:53 2021 +0000 (UTC) COBALT_NODEFILE=/tmp/tmpYcK9RV
+Sun Jan 31 20:56:53 2021 +0000 (UTC) COBALT_PARTNAME=thetagpu20
+Sun Jan 31 20:56:53 2021 +0000 (UTC) COBALT_JOBID=10007789
+Sun Jan 31 20:56:53 2021 +0000 (UTC) COBALT_STARTTIME=1612126605
+Sun Jan 31 20:56:53 2021 +0000 (UTC) LOGNAME=mzvyagin
+Sun Jan 31 20:56:53 2021 +0000 (UTC) USER=mzvyagin
+Sun Jan 31 20:56:53 2021 +0000 (UTC) COBALT_ENDTIME=1612169805
+Sun Jan 31 20:56:53 2021 +0000 (UTC) COBALT_PARTSIZE=1
+Sun Jan 31 20:56:53 2021 +0000 (UTC) HOME=/home/mzvyagin
+Sun Jan 31 20:56:53 2021 +0000 (UTC) COBALT_JOBSIZE=1
+Sun Jan 31 20:56:53 2021 +0000 (UTC) 
+Sun Jan 31 20:56:53 2021 +0000 (UTC) Info: stdin received from /dev/null
+Sun Jan 31 20:56:53 2021 +0000 (UTC) Info: stdout sent to /lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/resilient_alexnet/resilient_alexnet/results/10007789.output
+Sun Jan 31 20:56:53 2021 +0000 (UTC) Info: stderr sent to /lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/resilient_alexnet/resilient_alexnet/results/10007789.error
+Sun Jan 31 20:56:53 2021 +0000 (UTC) 
