@@ -224,8 +224,10 @@ def double_train(config):
     for key, value in search_results.items():
         if "first" in key:
             first_results.append(value)
-        else:
+        elif "second" in key:
             second_results.append(value)
+        else:
+            pass
     pt_ave = float(statistics.mean(first_results))
     tf_ave = float(statistics.mean(second_results))
     average_res = abs(pt_ave - tf_ave)
