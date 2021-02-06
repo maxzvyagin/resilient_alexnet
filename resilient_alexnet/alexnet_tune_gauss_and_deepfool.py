@@ -292,7 +292,7 @@ def bitune_parse_arguments(args):
     else:
         if args.model == "caltech":
             PT_MODEL = caltech_pytorch_alexnet.caltech_pt_objective
-            TF_MODEL = caltech_tensorflow_alexnet.fashion_tf_objective
+            TF_MODEL = caltech_tensorflow_alexnet.caltech_tf_objective
             NUM_CLASSES = 102
             MODEL_TYPE = "caltech"
         elif args.model == "cinic":
