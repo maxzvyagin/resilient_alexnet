@@ -138,7 +138,7 @@ class Fashion_PyTorch_AlexNet(pl.LightningModule):
     def test_step_end(self, outputs):
         loss = self.criterion(outputs['forward'], outputs['expected'])
         accuracy = self.accuracy(outputs['forward'], outputs['expected'])
-        logs = {'test_loss': loss, 'test_accuracy': ac  curacy}
+        logs = {'test_loss': loss, 'test_accuracy': accuracy}
         return {'test_loss': loss, 'logs': logs, 'test_accuracy': accuracy}
 
     def test_epoch_end(self, outputs):
