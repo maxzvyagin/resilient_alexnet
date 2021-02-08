@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 import statistics
 import os
 import argparse
-from hyper_resilient_experiments.alexnet_caltech.caltech_tensorflow_alexnet import get_caltech
+# from hyper_resilient_experiments.alexnet_caltech.caltech_tensorflow_alexnet import get_caltech
 import pickle
 from torch.utils.data import Dataset
 import numpy as np
