@@ -21,6 +21,7 @@ from ray.tune.integration.wandb import wandb_mixin
 import wandb
 from ray.tune.integration.wandb import wandb_mixin
 import pickle
+import os
 
 # Default constants
 PT_MODEL = fashion_pytorch_alexnet.fashion_pt_objective
@@ -165,6 +166,7 @@ def multi_train(config):
         else:
             pt_test_acc, pt_model, pt_training_history, pt_val_loss, pt_val_acc = PT_MODEL(config)
         pt_model.eval()
+        torch.save(pt_model.state_dict(), os.path.join(wandb.run.dir, "model.h5"))
         search_results = {'pt_test_acc': pt_test_acc}
         if not NO_FOOL:
             for attack_type in ['gaussian', 'deepfool']:
@@ -201,6 +203,7 @@ def multi_train(config):
             tf_test_acc, tf_model, tf_training_history, tf_val_loss, tf_val_acc = TF_MODEL(config)
         search_results = {}
         search_results['tf_test_acc'] = tf_test_acc
+        tf_model.save(os.path.join(wandb.run.dir, "model.h5"))
         if not NO_FOOL:
             for attack_type in ['gaussian', 'deepfool']:
                 pt_acc = model_attack(tf_model, "tf", attack_type, config, num_classes=NUM_CLASSES)
