@@ -154,6 +154,9 @@ def model_attack(model, model_type, attack_type, config, num_classes=NUM_CLASSES
 @wandb_mixin
 def multi_train(config):
     """Definition of side by side training of pytorch and tensorflow models, plus optional resiliency testing."""
+    # make sure to sync to wandb
+    wandb.save("*.pt")
+    wandb.save("*.h5")
     global NUM_CLASSES, MIN_RESILIENCY, MAX_DIFF, ONLY_CPU, MODEL_FRAMEWORK
     # print(NUM_CLASSES)
     if MODEL_FRAMEWORK == "pt":
@@ -166,7 +169,7 @@ def multi_train(config):
         else:
             pt_test_acc, pt_model, pt_training_history, pt_val_loss, pt_val_acc = PT_MODEL(config)
         pt_model.eval()
-        torch.save(pt_model.state_dict(), os.path.join(wandb.run.dir, "model.h5"))
+        torch.save(pt_model.state_dict(), os.path.join(wandb.run.dir, "model.pt"))
         search_results = {'pt_test_acc': pt_test_acc}
         if not NO_FOOL:
             for attack_type in ['gaussian', 'deepfool']:
