@@ -1,5 +1,7 @@
-# resilient_alexnet
+# AlexNet Implementations for Consistency and Robustness
 
-Instructions to run on ThetaGPU:
-- Use Max's conda environment 
-- Run using alexnet_tune.py, with proper flags. Must specify model type, json file, output file name, unique project file name for WeightsAndBiases tracking, number of trials, and which space to start at (0 for beginning, n if resuming run)
+Supporting code for KDD Submission 2021: HyperResilient: Hyperparameter Search towards Model Equivalence and Consistency Across Frameworks
+
+Each specific dataset has a supporting AlexNet implementation. All experiments are started 
+using the `.py` files in the top level directory. The JSON file used to generate the
+hyperparameter bounds is `standard.json`.  
