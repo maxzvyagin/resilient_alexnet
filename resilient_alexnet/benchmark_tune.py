@@ -157,6 +157,10 @@ def multi_train(config):
     # make sure to sync to wandb
     wandb.save("*.pt")
     wandb.save("*.h5")
+    print(tune.get_trial_name())
+    print(tune.get_trial_id())
+    print(tune.get_trial_dir())
+    break
     global NUM_CLASSES, MIN_RESILIENCY, MAX_DIFF, ONLY_CPU, MODEL_FRAMEWORK
     # print(NUM_CLASSES)
     if MODEL_FRAMEWORK == "pt":
