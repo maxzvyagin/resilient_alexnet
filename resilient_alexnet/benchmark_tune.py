@@ -172,10 +172,10 @@ def multi_train(config, extra_data_dir):
         else:
             pt_test_acc, pt_model, pt_training_history, pt_val_loss, pt_val_acc = PT_MODEL(config)
         pt_model.eval()
-        pt_model_path = os.path.join(extra_data_dir['results_dict'], 'pt_models')
+        pt_model_path = os.path.join(extra_data_dir['results_dir'], 'pt_models')
         if not os.path.exists(pt_model_path):
             os.makedirs(pt_model_path)
-        torch.save(pt_model.state_dict(), os.path.join(extra_data_dir['results_dict'], 'pt_models',
+        torch.save(pt_model.state_dict(), os.path.join(extra_data_dir['results_dir'], 'pt_models',
                                                        'pt_model'+tune.get_trial_name()+'.pt'))
         search_results = {'pt_test_acc': pt_test_acc}
         if not NO_FOOL:
@@ -213,7 +213,7 @@ def multi_train(config, extra_data_dir):
             tf_test_acc, tf_model, tf_training_history, tf_val_loss, tf_val_acc = TF_MODEL(config)
         search_results = {}
         search_results['tf_test_acc'] = tf_test_acc
-        tf_model_path = os.path.join(extra_data_dir['results_dict'], 'tf_models')
+        tf_model_path = os.path.join(extra_data_dir['results_dir'], 'tf_models')
         if not os.path.exists(tf_model_path):
             os.makedirs(tf_model_path)
         tf_model.save(os.path.join(extra_data_dir['results_dir'], 'tf_models', 'tf_model'+tune.get_trial_name()+'.h5'))
