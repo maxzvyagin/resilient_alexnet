@@ -299,4 +299,4 @@ if __name__ == "__main__":
     # print(OPTIMIZE_MODE)
     spaceray.run_experiment(args, multi_train, ray_dir="/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/raylogs", cpu=8,
                                 start_space=int(args.start_space), mode="max", project_name=args.project_name,
-                                group_name='benchmark', extra_data_dir={'results_dict': })
+                                group_name='benchmark', extra_data_dir={'results_dict': results})
