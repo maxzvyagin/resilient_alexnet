@@ -152,15 +152,14 @@ def model_attack(model, model_type, attack_type, config, num_classes=NUM_CLASSES
     return np.array(accuracy_list).mean()
 
 @wandb_mixin
-def multi_train(config):
+def multi_train(config, extra_data_dir):
     """Definition of side by side training of pytorch and tensorflow models, plus optional resiliency testing."""
     # make sure to sync to wandb
-    wandb.save("*.pt")
-    wandb.save("*.h5")
-    print(tune.get_trial_name())
-    print(tune.get_trial_id())
-    print(tune.get_trial_dir())
-    sys.exit()
+    # wandb.save("*.pt")
+    # wandb.save("*.h5")
+    # print(tune.get_trial_name())
+    # print(tune.get_trial_id())
+    # print(tune.get_trial_dir())
     global NUM_CLASSES, MIN_RESILIENCY, MAX_DIFF, ONLY_CPU, MODEL_FRAMEWORK
     # print(NUM_CLASSES)
     if MODEL_FRAMEWORK == "pt":
@@ -173,7 +172,8 @@ def multi_train(config):
         else:
             pt_test_acc, pt_model, pt_training_history, pt_val_loss, pt_val_acc = PT_MODEL(config)
         pt_model.eval()
-        torch.save(pt_model.state_dict(), os.path.join(wandb.run.dir, "model.pt"))
+        torch.save(pt_model.state_dict(), os.path.join(extra_data_dir['results_dict'], 'pt_models',
+                                                       'pt_model'+tune.get_trial_name()+'.pt'))
         search_results = {'pt_test_acc': pt_test_acc}
         if not NO_FOOL:
             for attack_type in ['gaussian', 'deepfool']:
@@ -210,7 +210,7 @@ def multi_train(config):
             tf_test_acc, tf_model, tf_training_history, tf_val_loss, tf_val_acc = TF_MODEL(config)
         search_results = {}
         search_results['tf_test_acc'] = tf_test_acc
-        tf_model.save(os.path.join(wandb.run.dir, "model.h5"))
+        tf_model.save(os.path.join(extra_data_dir['results_dir'], 'tf_models', 'tf_model'+tune.get_trial_name()+'.h5'))
         if not NO_FOOL:
             for attack_type in ['gaussian', 'deepfool']:
                 pt_acc = model_attack(tf_model, "tf", attack_type, config, num_classes=NUM_CLASSES)
