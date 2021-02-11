@@ -160,7 +160,7 @@ def multi_train(config):
     print(tune.get_trial_name())
     print(tune.get_trial_id())
     print(tune.get_trial_dir())
-    break
+    sys.exit()
     global NUM_CLASSES, MIN_RESILIENCY, MAX_DIFF, ONLY_CPU, MODEL_FRAMEWORK
     # print(NUM_CLASSES)
     if MODEL_FRAMEWORK == "pt":
