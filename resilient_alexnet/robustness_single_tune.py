@@ -151,7 +151,7 @@ def model_attack(model, model_type, attack_type, config, num_classes=NUM_CLASSES
     return np.array(accuracy_list).mean()
 
 @wandb_mixin
-def multi_train(config):
+def multi_train(config, extra_data_dir):
     """Definition of side by side training of pytorch and tensorflow models, plus optional resiliency testing."""
     global NUM_CLASSES, MIN_RESILIENCY, MAX_DIFF, ONLY_CPU, MODEL_FRAMEWORK
     # print(NUM_CLASSES)
