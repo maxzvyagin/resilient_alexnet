@@ -289,8 +289,10 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--framework', default='pt')
     args = parser.parse_args()
     bitune_parse_arguments(args)
+    results = args.out[:-4]
     # print(PT_MODEL)
     # print(OPTIMIZE_MODE)
     spaceray.run_experiment(args, multi_train, ray_dir="/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/raylogs", cpu=8,
                                 start_space=int(args.start_space), mode="max", project_name=args.project_name,
-                                group_name='benchmark')
+                                group_name='robustness', extra_data_dir={'results_dict': results},
+                            wandb_key='b24709b3f0a9bf7eae4f3a30280c90cd38d1d5f7')
