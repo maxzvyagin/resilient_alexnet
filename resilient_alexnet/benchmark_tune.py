@@ -203,6 +203,8 @@ def multi_train(config, extra_data_dir):
         table = wandb.Table(data=data, columns=["epochs", "validation accuracy"])
         wandb.log({"PT Validation Accuracy": wandb.plot.line(table, "epochs", "validation accuracy",
                                                              title="PT Validation Accuracy")})
+        print(os.path.join(extra_data_dir['results_dir'], 'pt_models',
+                                                       'pt_model'+tune.get_trial_name()+'.pt'))
     else:
         if ONLY_CPU:
             try:
