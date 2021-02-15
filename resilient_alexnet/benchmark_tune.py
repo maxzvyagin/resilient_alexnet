@@ -313,8 +313,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     bitune_parse_arguments(args)
     results = args.out[:-4]
-    print(results)
-    sys.exit()
     # print(PT_MODEL)
     # print(OPTIMIZE_MODE)
     spaceray.run_experiment(args, multi_train, ray_dir="/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/raylogs", cpu=8,
