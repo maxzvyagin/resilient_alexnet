@@ -173,6 +173,7 @@ def multi_train(config, extra_data_dir):
             pt_test_acc, pt_model, pt_training_history, pt_val_loss, pt_val_acc = PT_MODEL(config)
         pt_model.eval()
         pt_model_path = os.path.join(extra_data_dir['results_dir'], 'pt_models')
+        print(pt_model_path)
         if not os.path.exists(pt_model_path):
             os.makedirs(pt_model_path)
             print("Made dir", pt_model_path)
