@@ -186,7 +186,7 @@ def multi_train(config, extra_data_dir):
         print("Number four")
         print(os.path.join(extra_data_dir['results_dir'], 'pt_models',
                                                        'pt_model'+tune.get_trial_name()+'.pt'))
-        # sys.exit()
+        sys.exit()
         search_results = {'pt_test_acc': pt_test_acc}
         if not NO_FOOL:
             for attack_type in ['gaussian', 'deepfool']:
