@@ -175,8 +175,12 @@ def multi_train(config, extra_data_dir):
         pt_model_path = os.path.join(extra_data_dir['results_dir'], 'pt_models')
         if not os.path.exists(pt_model_path):
             os.makedirs(pt_model_path)
+            print("Made dir", pt_model_path)
         torch.save(pt_model.state_dict(), os.path.join(extra_data_dir['results_dir'], 'pt_models',
                                                        'pt_model'+tune.get_trial_name()+'.pt'))
+        print(os.path.join(extra_data_dir['results_dir'], 'pt_models',
+                                                       'pt_model'+tune.get_trial_name()+'.pt'))
+        sys.exit()
         search_results = {'pt_test_acc': pt_test_acc}
         if not NO_FOOL:
             for attack_type in ['gaussian', 'deepfool']:
