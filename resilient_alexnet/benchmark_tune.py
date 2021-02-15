@@ -178,7 +178,7 @@ def multi_train(config, extra_data_dir):
         print("Number two")
         print(os.path.exists(pt_model_path))
         if not os.path.exists(pt_model_path):
-            os.makedirs(pt_model_path)
+            os.mkdir(pt_model_path)
             print("Number three")
             print("Made dir", pt_model_path)
         torch.save(pt_model.state_dict(), os.path.join(extra_data_dir['results_dir'], 'pt_models',
