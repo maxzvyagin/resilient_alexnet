@@ -318,7 +318,9 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--framework', default='pt')
     args = parser.parse_args()
     bitune_parse_arguments(args)
+    print("MAIN", os.getcwd())
     results = args.out[:-4]
+    sys.exit()
     # print(PT_MODEL)
     # print(OPTIMIZE_MODE)
     spaceray.run_experiment(args, multi_train, ray_dir="/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/raylogs", cpu=8,
