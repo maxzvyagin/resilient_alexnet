@@ -318,8 +318,9 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--framework', default='pt')
     args = parser.parse_args()
     bitune_parse_arguments(args)
-    print("MAIN", os.getcwd())
+    main = os.getcwd()
     results = args.out[:-4]
+    results = os.path.join(main, results)
     sys.exit()
     # print(PT_MODEL)
     # print(OPTIMIZE_MODE)
