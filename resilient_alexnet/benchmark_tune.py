@@ -163,7 +163,8 @@ def multi_train(config, extra_data_dir):
     global NUM_CLASSES, MIN_RESILIENCY, MAX_DIFF, ONLY_CPU, MODEL_FRAMEWORK
     # print(NUM_CLASSES)
     if MODEL_FRAMEWORK == "pt":
-        print(os.getcwd())
+        print("This is the current working directory: ", os.getcwd())
+
         sys.exit()
         if ONLY_CPU:
             try:
