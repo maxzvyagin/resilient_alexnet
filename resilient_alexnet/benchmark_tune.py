@@ -163,9 +163,6 @@ def multi_train(config, extra_data_dir):
     global NUM_CLASSES, MIN_RESILIENCY, MAX_DIFF, ONLY_CPU, MODEL_FRAMEWORK
     # print(NUM_CLASSES)
     if MODEL_FRAMEWORK == "pt":
-        print("This is the current working directory: ", os.getcwd())
-
-        sys.exit()
         if ONLY_CPU:
             try:
                 pt_test_acc, pt_model, pt_training_history, pt_val_loss, pt_val_acc = PT_MODEL(config, only_cpu=ONLY_CPU)
@@ -179,20 +176,20 @@ def multi_train(config, extra_data_dir):
 
 
 
-        print("Number one")
-        print(pt_model_path)
-        print("Number two")
-        print(os.path.exists(pt_model_path))
+        # print("Number one")
+        # print(pt_model_path)
+        # print("Number two")
+        # print(os.path.exists(pt_model_path))
         if not os.path.exists(pt_model_path):
-            os.makedirs(pt_model_path)
-            print("Number three")
-            print("Made dir", pt_model_path)
+            # os.makedirs(pt_model_path)
+            # print("Number three")
+            # print("Made dir", pt_model_path)
         torch.save(pt_model.state_dict(), os.path.join(extra_data_dir['results_dir'], 'pt_models',
                                                        'pt_model'+tune.get_trial_name()+'.pt'))
-        print("Number four")
-        print(os.path.join(extra_data_dir['results_dir'], 'pt_models',
-                                                       'pt_model'+tune.get_trial_name()+'.pt'))
-        sys.exit()
+        # print("Number four")
+        # print(os.path.join(extra_data_dir['results_dir'], 'pt_models',
+        #                                                'pt_model'+tune.get_trial_name()+'.pt'))
+        # sys.exit()
         search_results = {'pt_test_acc': pt_test_acc}
         if not NO_FOOL:
             for attack_type in ['gaussian', 'deepfool']:
@@ -321,7 +318,6 @@ if __name__ == "__main__":
     main = os.getcwd()
     results = args.out[:-4]
     results = os.path.join(main, results)
-    sys.exit()
     # print(PT_MODEL)
     # print(OPTIMIZE_MODE)
     spaceray.run_experiment(args, multi_train, ray_dir="/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/raylogs", cpu=8,
