@@ -22,6 +22,7 @@ from ray.tune.integration.wandb import wandb_mixin
 import wandb
 from ray.tune.integration.wandb import wandb_mixin
 import pickle
+import os
 
 # Default constants
 PT_MODEL = fashion_pytorch_alexnet.fashion_pt_objective
@@ -357,6 +358,9 @@ if __name__ == "__main__":
     parser.add_argument('--minimize_variance', action="store_true")
     args = parser.parse_args()
     bitune_parse_arguments(args)
+    main = os.getcwd()
+    results = args.out[:-4]
+    results = os.path.join(main, results)
     # print(PT_MODEL)
     print(OPTIMIZE_MODE)
     spaceray.run_experiment(args, multi_train, ray_dir="/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/raylogs", cpu=8,
