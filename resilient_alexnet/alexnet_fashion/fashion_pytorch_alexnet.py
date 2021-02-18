@@ -61,7 +61,7 @@ class Fashion_PyTorch_AlexNet(pl.LightningModule):
             f = open('/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/alexnet_datasets/fashion_splits.pkl', 'rb')
             data = pickle.load(f)
         except:
-            f = open('/homes/mzvyagin/fashion_splits.pkl', 'rb')
+            f = open('/homes/mzvyagin/alexnet_datasets/fashion_splits.pkl', 'rb')
             data = pickle.load(f)
         (self.x_train, self.y_train), (self.x_val, self.y_val), (self.x_test, self.y_test) = data
         # tracking metrics
