@@ -138,7 +138,7 @@ class Caltech_PyTorch_AlexNet(pl.LightningModule):
 def caltech_pt_objective(config):
     torch.manual_seed(0)
     model = Caltech_PyTorch_AlexNet(config)
-    trainer = pl.Trainer(max_epochs=config['epochs'], gpus=[0], num_sanity_val_steps=0)
+    trainer = pl.Trainer(max_epochs=config['epochs'], gpus=1, num_sanity_val_steps=0)
     trainer.fit(model)
     trainer.test(model)
     return (model.test_accuracy, model.model, model.training_loss_history,

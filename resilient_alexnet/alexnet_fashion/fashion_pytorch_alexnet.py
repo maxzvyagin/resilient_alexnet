@@ -160,7 +160,7 @@ def fashion_pt_objective(config):
     #os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
     torch.manual_seed(0)
     model = Fashion_PyTorch_AlexNet(config)
-    trainer = pl.Trainer(max_epochs=config['epochs'], gpus=[0], num_sanity_val_steps=0)
+    trainer = pl.Trainer(max_epochs=config['epochs'], gpus=1, num_sanity_val_steps=0)
     trainer.fit(model)
     trainer.test(model)
     # print(len(model.calculated_training_loss), len(model.calculated_validation_loss),
