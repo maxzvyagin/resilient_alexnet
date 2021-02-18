@@ -57,8 +57,12 @@ class Fashion_PyTorch_AlexNet(pl.LightningModule):
         self.test_accuracy = None
         self.accuracy = pl.metrics.Accuracy()
         ### load in pickled dataset
-        f = open('/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/alexnet_datasets/fashion_splits.pkl', 'rb')
-        data = pickle.load(f)
+        try:
+            f = open('/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/alexnet_datasets/fashion_splits.pkl', 'rb')
+            data = pickle.load(f)
+        except:
+            f = open('/homes/mzvyagin/fashion_splits.pkl', 'rb')
+            data = pickle.load(f)
         (self.x_train, self.y_train), (self.x_val, self.y_val), (self.x_test, self.y_test) = data
         # tracking metrics
         self.training_loss_history = []
