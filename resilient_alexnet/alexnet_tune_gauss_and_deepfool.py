@@ -365,4 +365,4 @@ if __name__ == "__main__":
     print(OPTIMIZE_MODE)
     spaceray.run_experiment(args, multi_train, ray_dir="/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/raylogs", cpu=8,
                                 start_space=int(args.start_space), mode=OPTIMIZE_MODE, project_name=args.project_name,
-                                group_name='bi_tune')
+                                group_name='bi_tune',  wandb_key='b24709b3f0a9bf7eae4f3a30280c90cd38d1d5f7')
