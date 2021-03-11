@@ -165,7 +165,7 @@ def model_attack(model, model_type, attack_type, config, num_classes=NUM_CLASSES
     return np.array(accuracy_list).mean()
 
 @wandb_mixin
-def multi_train(config):
+def multi_train(config, extra_data_dir):
     """Definition of side by side training of pytorch and tensorflow models, plus optional resiliency testing."""
     global NUM_CLASSES, DIFF_RESILIENCY, MAX_DIFF, ONLY_CPU, MAXIMIZE_CONVERGENCE
     # print(NUM_CLASSES)
@@ -365,4 +365,5 @@ if __name__ == "__main__":
     print(OPTIMIZE_MODE)
     spaceray.run_experiment(args, multi_train, ray_dir="/lus/theta-fs0/projects/CVD-Mol-AI/mzvyagin/raylogs", cpu=8,
                                 start_space=int(args.start_space), mode=OPTIMIZE_MODE, project_name=args.project_name,
-                                group_name='bi_tune',  wandb_key='b24709b3f0a9bf7eae4f3a30280c90cd38d1d5f7')
+                                group_name='bi_tune',  wandb_key='b24709b3f0a9bf7eae4f3a30280c90cd38d1d5f7',
+                            extra_data_dir={'results_dir': results})
